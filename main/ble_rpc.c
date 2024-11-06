@@ -8,19 +8,19 @@
 
 static const char *TAG = "BleRpc";
 
-esp_err_t rpc_set_wifi_config(cJSON *payload, char **result) {
+esp_err_t rpc_set_wifi_config(cJSON *params, char **result) {
     esp_err_t err;
     char *ssid, *pass;
 
-    if (cJSON_GetObjectItem(payload, "ssid")) {
-        ssid = cJSON_GetObjectItem(payload, "ssid")->valuestring;
+    if (cJSON_GetObjectItem(params, "ssid")) {
+        ssid = cJSON_GetObjectItem(params, "ssid")->valuestring;
     } else {
         *result = "ssid is required";
         return ESP_ERR_INVALID_ARG;
     }
 
-    if (cJSON_GetObjectItem(payload, "pass")) {
-        pass = cJSON_GetObjectItem(payload, "pass")->valuestring;
+    if (cJSON_GetObjectItem(params, "pass")) {
+        pass = cJSON_GetObjectItem(params, "pass")->valuestring;
     } else {
         *result = "password is required";
         return ESP_ERR_INVALID_ARG;
@@ -33,10 +33,10 @@ esp_err_t rpc_set_wifi_config(cJSON *payload, char **result) {
     return ESP_OK;
 }
 
-esp_err_t rpc_set_home_id(cJSON *payload, char **result) {
+esp_err_t rpc_set_home_id(cJSON *params, char **result) {
     esp_err_t err;
     
-    err = cfg_set_home_id(payload->valuestring);
+    err = cfg_set_home_id(params->valuestring);
     if (err != ESP_OK) {
         *result = "set home id failed";
         return err;
@@ -46,26 +46,32 @@ esp_err_t rpc_set_home_id(cJSON *payload, char **result) {
     return ESP_OK;
 }
 
-
-esp_err_t rpc_set_mqtt_config(cJSON *payload, char **result) {
+esp_err_t rpc_set_mqtt_config(cJSON *params, char **result) {
   esp_err_t err;
   cJSON *host, *port, *user, *pass;
 
-  host = cJSON_GetObjectItem(payload, "host");
-  port = cJSON_GetObjectItem(payload, "port");
-  user = cJSON_GetObjectItem(payload, "user");
-  pass = cJSON_GetObjectItem(payload, "pass");
+    host = cJSON_GetObjectItem(params, "host");
+    port = cJSON_GetObjectItem(params, "port");
+    user = cJSON_GetObjectItem(params, "user");
+    pass = cJSON_GetObjectItem(params, "pass");
 
   if (host == NULL || port == NULL || user == NULL || pass == NULL) {
     *result = "request format is invalid.";
     return ESP_ERR_INVALID_ARG;
   }
 
-  err = cfg_set_mqtt_config(host->valuestring, port->valueint, user->valuestring, pass->valuestring);
+    err = cfg_set_mqtt_config(host->valuestring, port->valueint, user->valuestring,
+                              pass->valuestring);
   if (err != ESP_OK) {
     *result = "set mqtt config failed";
     return err;
   }
+
+    err = mqtt_connect();
+    if (err != ESP_OK) {
+        *result = "mqtt connect failed";
+        return err;
+    }
 
   *result = NULL;
   return ESP_OK;
@@ -84,18 +90,18 @@ esp_err_t ble_rpc_req_process(const char *json, char **response) {
 
     cJSON *id = cJSON_GetObjectItem(req, "id");
     cJSON *method = cJSON_GetObjectItem(req, "method");
-    cJSON *payload = cJSON_GetObjectItem(req, "payload");
-    if (id == NULL || method == NULL || payload == NULL) {
+    cJSON *params = cJSON_GetObjectItem(req, "payload");
+    if (id == NULL || method == NULL || params == NULL) {
         ESP_LOGE(TAG, "request format is invalid.");
         return ESP_ERR_INVALID_ARG;
     }
 
     if (strcmp(method->valuestring, M_SET_HOME_ID) == 0) {
-        err = rpc_set_home_id(payload, &result);
+        err = rpc_set_home_id(params, &result);
     } else if (strcmp(method->valuestring, M_SET_WIFI_CONFIG) == 0) {
-        err = rpc_set_wifi_config(payload, &result);
+        err = rpc_set_wifi_config(params, &result);
     } else if (strcmp(method->valuestring, M_SET_MQTT_CONFIG) == 0) {
-        err = rpc_set_mqtt_config(payload, &result);
+        err = rpc_set_mqtt_config(params, &result);
     } else {
         err = ESP_ERR_NOT_FOUND;
         result = "method not found";
