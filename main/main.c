@@ -2,8 +2,17 @@
 
 static const char *TAG = "APP";
 
-void app_main(void)
-{   
+void app_main(void) {
+    esp_log_level_set("*", ESP_LOG_INFO);
+    esp_log_level_set("APP", ESP_LOG_VERBOSE);
+    esp_log_level_set("CFG", ESP_LOG_VERBOSE);
+    esp_log_level_set("BLE", ESP_LOG_VERBOSE);
+    esp_log_level_set("WIFI", ESP_LOG_VERBOSE);
+    esp_log_level_set("MQTT", ESP_LOG_VERBOSE);
+    esp_log_level_set("ZIGBEE", ESP_LOG_VERBOSE);
+    esp_log_level_set("BleRpc", ESP_LOG_VERBOSE);
+    esp_log_level_set("MqttRpc", ESP_LOG_VERBOSE);
+
    ESP_ERROR_CHECK(cfg_init());
    ESP_ERROR_CHECK(ble_init());
    ESP_ERROR_CHECK(wifi_init());

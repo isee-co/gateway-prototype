@@ -6,7 +6,7 @@
 #define M_SET_MQTT_CONFIG "SetMqttConfig"
 #define M_SET_WIFI_CONFIG "SetWifiConfig"
 
-static const char *TAG = "BLE_RPC";
+static const char *TAG = "BleRpc";
 
 esp_err_t rpc_set_wifi_config(cJSON *payload, char **result) {
     esp_err_t err;
