@@ -5,7 +5,22 @@
 
 static const char* TAG = "WIFI";
 
-static wifi_state_t wifi_state;
+wifi_state_t wifi_state;
+
+static const char* wifi_state_str(wifi_state_t state) {
+    switch (state) {
+        case WIFI_INIT:
+            return "INIT";
+        case WIFI_CONNECTING:
+            return "CONNECTING";
+        case WIFI_CONNECTED:
+            return "CONNECTED";
+        case WIFI_DISCONNECTED:
+            return "DISCONNECTED";
+        default:
+            return "UNKNOWN";
+    }
+}
 
 static void update_wifi_state(wifi_state_t state) {
     wifi_state = state;
