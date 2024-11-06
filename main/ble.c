@@ -50,6 +50,7 @@ static const struct ble_gatt_svc_def gatts_config_svcs[] = {
                     // events notify characteristic
                     .uuid = BLE_UUID16_DECLARE(EVENTS_CHR_UID),
                     .access_cb = gatts_char_access_cb,
+                    .val_handle = &events_handel,
                     .flags = BLE_GATT_CHR_F_NOTIFY,
                 },
                 {
@@ -65,6 +66,19 @@ static const struct ble_gatt_svc_def gatts_config_svcs[] = {
     {0, /* No more services. */},
 };
 
+static const char* event_type_str(event_type_t type) {
+    switch (type) {
+        case EVENT_BLE:
+        return "BLE";
+        case EVENT_WIFI:
+        return "WIFI";
+        case EVENT_MQTT:
+        return "MQTT";
+        default:
+        return "UNKNOWN";
+    }
+}
+
 esp_err_t ble_notify_attr(uint16_t attr_handle, uint8_t *data, uint16_t len) {
     struct os_mbuf *om;
     om = ble_hs_mbuf_from_flat(data, len);
@@ -78,15 +92,18 @@ esp_err_t ble_notify_attr(uint16_t attr_handle, uint8_t *data, uint16_t len) {
 }
 
 void ble_notify_event(event_type_t type, const char *event) {
-    if (event_char_subscribed == false) return;
+    if (!event_char_subscribed) return;
+
     int len;
     char eventBuf[200];
     len = sprintf(eventBuf, "{\"type\":\"%s\" \"event\":\"%s\"}", event_type_str(type), event);
 
     esp_err_t err = ble_notify_attr(events_handel, (uint8_t *)eventBuf, len);
     if (err != ESP_OK) {
-        ESP_LOGW(TAG, "ble notify event failed. %d", err);
+        ESP_LOGW(TAG, "ble notify event failed. event: %.*s err: %d", len, eventBuf, err);
     }
+    
+    ESP_LOGD(TAG, "notify event: %.*s", len, eventBuf);
 }
 
 static int rpc_response_send(char *res_buf) {
