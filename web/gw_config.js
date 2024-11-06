@@ -1,18 +1,18 @@
 // DOM Elements
-const bleConnect = document.getElementById('ble_connect');
-const bleDisconnect = document.getElementById('ble_disconnect');
-const bleState = document.getElementById('ble_state');
-const wifiSsid = document.getElementById('wifi_ssid');
-const wifiPassword = document.getElementById('wifi_password');
-const wifiSave = document.getElementById('wifi_save');
-const homeId = document.getElementById('home_id');
-const homeIdSave = document.getElementById('home_id_save');
-const mqttServer = document.getElementById('mqtt_server');
-const mqttPort = document.getElementById('mqtt_port');
-const mqttUsername = document.getElementById('mqtt_username');
-const mqttPassword = document.getElementById('mqtt_password');
-const mqttSave = document.getElementById('mqtt_save');
-const textLogs = document.getElementById('logs');
+const cfgBleConnect = document.getElementById('cfg_ble_connect');
+const cfgBleDisconnect = document.getElementById('cfg_ble_disconnect');
+const cfgBleState = document.getElementById('cfg_ble_state');
+const cfgWifiSsid = document.getElementById('cfg_wifi_ssid');
+const cfgWifiPass = document.getElementById('cfg_wifi_pass');
+const cfgWifiSave = document.getElementById('cfg_wifi_save');
+const cfgHomeId = document.getElementById('cfg_home_id');
+const cfgHomeIdSave = document.getElementById('cfg_home_id_save');
+const cfgMqttServer = document.getElementById('cfg_mqtt_server');
+const cfgMqttPort = document.getElementById('cfg_mqtt_port');
+const cfgMqttUser = document.getElementById('cfg_mqtt_user');
+const cfgMqttPass = document.getElementById('cfg_mqtt_pass');
+const cfgMqttSave = document.getElementById('cfg_mqtt_save');
+const cfgTextLogs = document.getElementById('cfg_logs');
 
 //Define BLE Device Specs
 const BLE_DEVICE_NAME = 'Zigbee-Gateway';
@@ -28,35 +28,35 @@ var bleRpcChar;
 var bleEventsChar;
 
 // Connect Button (search for BLE Devices only if BLE is available)
-bleConnect.addEventListener('click', (event) => {
+cfgBleConnect.addEventListener('click', (event) => {
     if (isWebBluetoothEnabled()) {
         connectToDevice();
     }
 });
 
 // Disconnect Button
-bleDisconnect.addEventListener('click', disconnectDevice);
+cfgBleDisconnect.addEventListener('click', disconnectDevice);
 
 // wifi config Save
-wifiSave.addEventListener('click', (event) => {
-    const config = { ssid: wifiSsid.value, pass: wifiPassword.value, }
+cfgWifiSave.addEventListener('click', (event) => {
+    const config = { ssid: cfgWifiSsid.value, pass: cfgWifiPass.value, }
     const request = { id: 123, method: 'SetWifiConfig', payload: config }
     sendRpcRequest(JSON.stringify(request));
 });
 
 // Home ID Save
-homeIdSave.addEventListener('click', (event) => {
-    const request = { id: 123, method: 'SetHomeId', payload: homeId.value }
+cfgHomeIdSave.addEventListener('click', (event) => {
+    const request = { id: 123, method: 'SetHomeId', payload: cfgHomeId.value }
     sendRpcRequest(JSON.stringify(request));
 });
 
 // mqtt config Save
-mqttSave.addEventListener('click', (event) => {
+cfgMqttSave.addEventListener('click', (event) => {
     const config = {
-        server: mqttServer.value,
-        port: mqttPort.value,
-        username: mqttUsername.value,
-        password: mqttPassword.value
+        host: cfgMqttServer.value,
+        port: +cfgMqttPort.value,
+        user: mqttUsername.value,
+        pass: mqttPassword.value
     }
     const request = { id: 123, method: 'SetMqttConfig', payload: config }
     sendRpcRequest(JSON.stringify(request));
@@ -66,13 +66,13 @@ mqttSave.addEventListener('click', (event) => {
 async function isWebBluetoothEnabled() {
     if (!navigator.bluetooth) {
         console.log('Web Bluetooth API is not available in this browser!');
-        bleState.innerHTML = "Web Bluetooth API is not available in this browser/device!";
+        cfgBleState.innerHTML = "Web Bluetooth API is not available in this browser/device!";
         return false
     }
     var availability = await navigator.bluetooth.getAvailability();
     if (!availability) {
         console.log('Web Bluetooth adapter is not available in this browser!');
-        bleState.innerHTML = "Web Bluetooth adapter is not available in this browser/device!";
+        cfgBleState.innerHTML = "Web Bluetooth adapter is not available in this browser/device!";
         return false
     }
     console.log('Web Bluetooth API supported in this browser.');
@@ -88,10 +88,10 @@ function connectToDevice() {
     })
         .then(device => {
             console.log('Device Selected:', device.name);
-            bleConnect.style.display = "none";
-            bleDisconnect.style.display = "inline-block";
-            bleState.innerHTML = 'Connected to device ' + device.name;
-            bleState.style.color = "#24af37";
+            cfgBleConnect.style.display = "none";
+            cfgBleDisconnect.style.display = "inline-block";
+            cfgBleState.innerHTML = 'Connected to device ' + device.name;
+            cfgBleState.style.color = "#24af37";
             device.addEventListener('gattserverdisconnected', onDisconnected);
             return device.gatt.connect();
         })
@@ -116,7 +116,9 @@ function connectToDevice() {
             console.log("Characteristic discovered:", characteristic.uuid);
             bleEventsChar = characteristic;
             characteristic.addEventListener('characteristicvaluechanged', handleCharNotification);
-            characteristic.startNotifications();
+            setTimeout(() => {
+                characteristic.startNotifications();
+            }, 200)
         })
         .catch(error => {
             console.log('Error: ', error);
@@ -124,11 +126,11 @@ function connectToDevice() {
 }
 
 function onDisconnected(event) {
-    bleConnect.style.display = "inline-block";
-    bleDisconnect.style.display = "none";
+    cfgBleConnect.style.display = "inline-block";
+    cfgBleDisconnect.style.display = "none";
     console.log('Device Disconnected:', event.target.device.name);
-    bleState.innerHTML = "Device disconnected";
-    bleState.style.color = "#d13a30";
+    cfgBleState.innerHTML = "Device disconnected";
+    cfgBleState.style.color = "#d13a30";
 
     connectToDevice();
 }
@@ -137,7 +139,7 @@ function handleCharNotification(event) {
     const newValueReceived = new TextDecoder().decode(event.target.value);
     const source = event.target.uuid == bleRpcChar.uuid ? "RpcRes" : "Event";
     setTimeout(() => {
-        textLogs.innerHTML += `${getTime()} ${source}:  ${newValueReceived} \n`;
+        cfgTextLogs.innerHTML += `${getTime()} ${source}:  ${newValueReceived} \n`;
     }, 100);
 }
 
@@ -146,9 +148,9 @@ function sendRpcRequest(req) {
         var enc = new TextEncoder();
         const data = enc.encode(req);
         bleRpcChar.writeValue(data).then(() => {
-            textLogs.innerHTML += `${getTime()} RpcReq:  ${req} \n`;
+            cfgTextLogs.innerHTML += `${getTime()} RpcReq:\t${req} \n`;
         }).catch(error => {
-            textLogs.innerHTML += `${getTime()} Error:  ${error} \n`;
+            cfgTextLogs.innerHTML += `${getTime()} Error:\t${error} \n`;
         });
     } else {
         console.error("Bluetooth is not connected. Cannot write to characteristic.")

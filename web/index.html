@@ -18,57 +18,57 @@
             <div class="card-header">
                 <div class="d-flex flex-row justify-content-between">
                     <span>BLE Connection</span>
-                    <button id="ble_connect" class="btn btn-primary btn-sm"> Connect</button>
-                    <button id="ble_disconnect" class="btn btn-secondary btn-sm" style="display: none;">
+                    <button id="cfg_ble_connect" class="btn btn-primary btn-sm"> Connect</button>
+                    <button id="cfg_ble_disconnect" class="btn btn-secondary btn-sm" style="display: none;">
                         Disconnect</button>
                 </div>
             </div>
             <div class="card-body">
-                <p class="gray-label">BLE state: <strong><span id="ble_state"
+                <p class="gray-label">BLE state: <strong><span id="cfg_ble_state"
                             style="color:#d13a30;">Disconnected</span></strong></p>
 
                 <p class="h5">1. Wifi Connection</p>
                 <div class="d-grid gap-2">
                     <div class="col-sm-12">
-                        <input id="wifi_ssid" type="text" class="form-control" placeholder="Enter ssid">
+                        <input id="cfg_wifi_ssid" type="text" class="form-control" placeholder="Enter ssid">
                     </div>
                     <div class="col-sm-12">
-                        <input id="wifi_password" type="password" class="form-control" placeholder="Enter password">
+                        <input id="cfg_wifi_pass" type="password" class="form-control" placeholder="Enter password">
                     </div>
-                    <button id="wifi_save" type="submit" class="btn btn-success btn-block">Save</button>
+                    <button id="cfg_wifi_save" type="submit" class="btn btn-success btn-block">Save</button>
                 </div>
 
                 <p class="h5 mt-3">2. Home ID</p>
                 <div class="d-grid gap-2">
                     <div class="col-sm-12">
-                        <input id="home_id" type="text" class="form-control" placeholder="Enter home id">
+                        <input id="cfg_home_id" type="text" class="form-control" placeholder="Enter home id">
                     </div>
-                    <button id="home_id_save" type="submit" class="btn btn-success btn-block">Save</button>
+                    <button id="cfg_home_id_save" type="submit" class="btn btn-success btn-block">Save</button>
                 </div>
 
                 <p class="h5 mt-3">3. MQTT Config</p>
                 <div class="d-grid gap-2">
                     <div class="row">
                         <div class="col-8">
-                            <input id="mqtt_server" type="text" class="form-control" placeholder="Enter host name / ip">
+                            <input id="cfg_mqtt_server" type="text" class="form-control" placeholder="Enter host name / ip">
                         </div>
                         <div class="col-4">
-                            <input id="mqtt_port" type="text" class="form-control" placeholder="Enter port number">
+                            <input id="cfg_mqtt_port" type="text" class="form-control" placeholder="Enter port number">
                         </div>
                     </div>
                     <div class="col-12">
-                        <input id="mqtt_username" type="text" class="form-control" placeholder="Enter user name">
+                        <input id="cfg_mqtt_user" type="text" class="form-control" placeholder="Enter user name">
                     </div>
                     <div class="col-12">
-                        <input id="mqtt_password" type="password" class="form-control" placeholder="Enter password">
+                        <input id="cfg_mqtt_pass" type="password" class="form-control" placeholder="Enter password">
                     </div>
-                    <button id="mqtt_save" type="submit" class="btn btn-success btn-block">Save</button>
+                    <button id="cfg_mqtt_save" type="submit" class="btn btn-success btn-block">Save</button>
                 </div>
 
 
                 <div class="mt-3">
                     <label class="h5" for="logs">Logs:</label>
-                    <textarea id="logs" class="form-control" rows="8" wrap="off"></textarea>
+                    <textarea id="cfg_logs" class="form-control" rows="8" wrap="off"></textarea>
                 </div>
 
             </div>
