@@ -35,22 +35,13 @@ void wifi_connect_task(void* config) {
     vTaskDelete(NULL);
 }
 
-esp_err_t wifi_connect(const char* ssid, const char* pass) {
+esp_err_t wifi_connect() {
     esp_err_t err;
-    wifi_config_t wifi_config = {0};
-
-    if (!(ssid && pass)) {
-        ESP_LOGE(TAG, "wifi connecting failed. ssid and pass is required");
-        return ESP_ERR_INVALID_ARG;
-    }
-
-    strlcpy((char*)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
-    strlcpy((char*)wifi_config.sta.password, pass, sizeof(wifi_config.sta.password));
 
     err = esp_wifi_set_mode(WIFI_MODE_STA);
     ESP_RETURN_ON_ERROR(err, TAG, "wifi set mode failed. %d", err);
 
-    err = esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+    err = esp_wifi_set_config(WIFI_IF_STA, &app_config.wifi);
     ESP_RETURN_ON_ERROR(err, TAG, "wifi set config failed. %d", err);
     
     update_wifi_state(WIFI_CONNECTING);

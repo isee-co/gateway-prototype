@@ -25,9 +25,17 @@ esp_err_t rpc_set_wifi_config(cJSON *params, char **result) {
         *result = "password is required";
         return ESP_ERR_INVALID_ARG;
     }
-
-    err = wifi_connect(ssid, pass);
-    if (err != ESP_OK) return err;
+    err = cfg_set_wifi_config(ssid, pass);
+    if (err != ESP_OK) {
+        *result = "set wifi config failed";
+        return err;
+    }
+    
+    err = wifi_connect();
+    if (err != ESP_OK) {
+        *result = "wifi connecting failed.";
+        return err;
+    }
 
     *result = NULL;
     return ESP_OK;

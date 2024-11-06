@@ -79,7 +79,7 @@ void ble_notify_event(event_type_t type, const char *event);
 esp_err_t ble_rpc_req_process(const char *json, char **response);
 
 esp_err_t wifi_init(void);
-esp_err_t wifi_connect(const char *ssid, const char *pass);
+esp_err_t wifi_connect(void);
 
 esp_err_t zigbee_init(void);
 esp_err_t zigbee_join_permit(bool enable, uint8_t duration);
