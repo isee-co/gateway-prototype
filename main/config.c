@@ -12,11 +12,7 @@
 #define WIFI_PASS_LEN 64
 
 static const char *TAG = "CFG";
-static app_config_t app_config = {0};
-
-static void print_config(app_config_t *config) {
-    printf("app_config:\n \thome_id: %s\n", config->home_id);
-}
+app_config_t app_config = {0};
 
 static esp_err_t cfg_load(void) {
     esp_err_t err;
@@ -33,13 +29,13 @@ static esp_err_t cfg_load(void) {
         ESP_LOGI(TAG, "app config not found");
     } else {
         ESP_LOGI(TAG, "load app config. length=%d", length);
-        ESP_LOGD(TAG,
+        ESP_LOGD(TAG, "app config: \n"
                  "\thome_id: %s\n"
                  "\twifi[ssid: %s, pass: %s]\n"
                  "\tmqtt[host: %s, port: %d, user: %s, pass: %s]\n",
                  app_config.home_id, app_config.wifi.ssid, app_config.wifi.password,
                  app_config.mqtt.host, app_config.mqtt.port, app_config.mqtt.username,
-                 app_config.mqtt.password);
+                 app_config.mqtt.password);              
     }
 
     nvs_close(nvs_handle);
@@ -118,8 +114,6 @@ esp_err_t cfg_init(void) {
 
     err = cfg_load();
     ESP_RETURN_ON_ERROR(err, TAG, "read config failed.");
-
-    print_config(&app_config);
 
     return ESP_OK;
 }
