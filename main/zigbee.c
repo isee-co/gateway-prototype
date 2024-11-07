@@ -76,8 +76,8 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct) {
                     ESP_LOGI(TAG, "Start network formation");
                     esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_FORMATION);
                 } else {
-                    ESP_LOGI(TAG, "Start network steering");
-                    esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+                    ESP_LOGI(TAG, "Open network for starting");
+                    esp_zb_bdb_open_network(10);
                 }
             } else {
                 ESP_LOGE(TAG, "Failed to initialize Zigbee stack (status: %s)",
