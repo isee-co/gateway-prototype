@@ -71,11 +71,13 @@ void mqtt_publish_dev_annnc(device_info_t *dev_info) {
     cJSON *event = cJSON_CreateObject();
     cJSON_AddStringToObject(event, "device_id", dev_id);
     cJSON_AddStringToObject(event, "device_info", "{}");
-    cJSON *endpoints = cJSON_AddObjectToObject(event, "endpoints");
-    for (int i = 0; i < dev_info->ep_count; i++) {        
-        cJSON_AddNumberToObject(endpoints, "id", dev_info->ep_list[i].id);
-        cJSON_AddNumberToObject(endpoints, "type", dev_info->ep_list[i].type);
-        cJSON_AddStringToObject(endpoints, "description", dev_info->ep_list[i].disc);
+    cJSON *endpoints = cJSON_AddArrayToObject(event, "endpoints");
+    for (int i = 0; i < dev_info->ep_count; i++) {
+        cJSON *endpoint = cJSON_CreateObject();
+        cJSON_AddNumberToObject(endpoint, "id", dev_info->ep_list[i].id);
+        cJSON_AddNumberToObject(endpoint, "type", dev_info->ep_list[i].type);
+        cJSON_AddStringToObject(endpoint, "description", dev_info->ep_list[i].disc);
+        cJSON_AddItemToArray(endpoints, endpoint);
     }
     
     char *event_str = cJSON_PrintUnformatted(event);
