@@ -55,8 +55,8 @@ cfgMqttSave.addEventListener('click', (event) => {
     const config = {
         host: cfgMqttServer.value,
         port: +cfgMqttPort.value,
-        user: mqttUsername.value,
-        pass: mqttPassword.value
+        user: cfgMqttUser.value,
+        pass: cfgMqttPass.value
     }
     const request = { id: 123, method: 'SetMqttConfig', payload: config }
     sendRpcRequest(JSON.stringify(request));
