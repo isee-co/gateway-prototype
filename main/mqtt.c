@@ -32,7 +32,7 @@ static void update_mqtt_state(mqtt_state_t state) {
 }
 
 void mqtt_publish_dev_state(uint8_t ieee_addr[8], uint8_t endpoint, uint16_t cluster, void *value) {
-    char topic[40];
+    char topic[50];
     size_t out_len;
     char *dev_id = base64_url_encode(ieee_addr, 8, &out_len);
     snprintf(topic, sizeof(topic), "/%s/%s/%s/%d", app_config.home_id, DEV_STATE, dev_id, endpoint);
@@ -63,7 +63,7 @@ void mqtt_publish_dev_state(uint8_t ieee_addr[8], uint8_t endpoint, uint16_t clu
 }
 
 void mqtt_publish_dev_annnc(device_info_t *dev_info) {
-    char topic[40];
+    char topic[50];
     size_t out_len;
     char *dev_id = base64_url_encode(dev_info->ieee_addr, 8, &out_len);
     snprintf(topic, sizeof(topic), "/%s/%s/%s", app_config.home_id, DEV_JOIN, GATEWAY_ID_B64);
@@ -85,8 +85,13 @@ void mqtt_publish_dev_annnc(device_info_t *dev_info) {
     cJSON_free(event_str);
 }
 
-static void mqtt_subscrib_rpc_req(esp_mqtt_client_handle_t client) {
-    char topic[32];
+static void mqtt_connected(esp_mqtt_client_handle_t client) {
+    char topic[50];
+    // publish gateway status
+    snprintf(topic, sizeof(topic), "/%s/EVENTS/%s/STATUS", app_config.home_id, GATEWAY_ID_B64);
+    esp_mqtt_client_publish(client, topic, "online", 0, 1, 1);
+    
+    // subscribe rpc request topic
     snprintf(topic, sizeof(topic), "/%s/%s/%s", app_config.home_id, RPC_REQ, GATEWAY_ID_B64);
     esp_mqtt_client_subscribe(client, topic, 1);
 }
@@ -131,7 +136,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
             update_mqtt_state(MQTT_CONNECTED);
-            mqtt_subscrib_rpc_req(event->client);
+            mqtt_connected(event->client);
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -174,6 +179,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 esp_err_t mqtt_connect() {
     esp_err_t err;
     mqtt_config_t *cfg = &app_config.mqtt;
+    char lastwill_topic[50];
+    snprintf(lastwill_topic, sizeof(lastwill_topic), "/%s/EVENTS/%s/STATUS", app_config.home_id, GATEWAY_ID_B64);
     esp_mqtt_client_config_t mqtt5_cfg = {
         .network.disable_auto_reconnect = true,
         .session.protocol_ver = MQTT_PROTOCOL_V_5,
@@ -182,6 +189,13 @@ esp_err_t mqtt_connect() {
                            .transport = MQTT_TRANSPORT_OVER_TCP},
         .credentials = {.username = (char *)cfg->username,
                         .authentication.password = (char *)cfg->password},
+        .session.last_will =
+            {
+                .topic = lastwill_topic,
+                .msg = "offline",
+                .msg_len = 7,
+                .retain = true,
+            },
     };
 
     client = esp_mqtt_client_init(&mqtt5_cfg);
