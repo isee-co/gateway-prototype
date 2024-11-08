@@ -3,8 +3,8 @@
 
 #include "main.h"
 
-#define M_SET_JOIN_PERMIT "SetJoinPermit"
-#define M_SET_DEVICE_STATE "SetDeviceState"
+#define M_SET_JOIN_PERMIT "setJoinPermit"
+#define M_SET_DEVICE_STATE "setDevState"
 #define DEFAULT_JOIN_PERMIT_DURATION 10
 
 static const char *TAG = "MqttRpc";

@@ -4,10 +4,10 @@
 #include "../src/utils/base64.h"
 #include "main.h"
 
-#define RPC_REQ "RPCREQ"
-#define RPC_RES "RPCRES"
-#define DEV_STATE "DEVSTATE"
-#define DEV_JOIN "DEVJOIN"
+#define RPC_REQ "RPC_REQ"
+#define RPC_RES "RPC_RES"
+#define DEV_STATE "DEV_STATE"
+#define DEV_JOIN "DEV_JOIN"
 
 static const char *TAG = "MQTT";
 mqtt_state_t mqtt_state = MQTT_DISCONNECTED;
