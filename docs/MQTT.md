@@ -55,18 +55,18 @@ The gateway should subscribe to the ***Request topic***, invoke the requested me
 ***Example:***
 
 ```json
-request: { "method": "setPermitJoin", "params": { "state": "enable", "timeout": 10 } }
+request: { "method": "setJoinPermit", "params": { "state": "enable", "timeout": 10 } }
         
 response: { "success": true, "data": { "state": "enabled", "timeout": 10 } }
 ```
 
 ## 1.1 RPC Methods
 
-### 1.1.1 Set Permit Join
+### 1.1.1 Set Join Permit 
 
 This method is used to enable or disable permit join. when the permit join is enabled, the gateway will accept the join request from the device for specific amount of time (default 10 seconds), and then reject the join request.
 
-***Method name:*** setPermitJoin 
+***Method name:*** setJoinPermit
 
 ***Parameters:***
 
