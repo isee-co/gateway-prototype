@@ -164,10 +164,10 @@ This method is used to set log level.
 
 | Enum value | Type description |
 |------------|------------------|
-| 0x01       | On/Off Switch    |
-| 0x02       | Dimmable Light   |
-| 0x03       | window Covering  |
-| 0x04       | AC Controller    |
+| 0x06       | On/Off Switch    |
+| 0x08       | Dimmable Light   |
+| 0x0102     | window Covering  |
+| 0x0204     | AC Controller    |
 
 ### 1.1.4.1 On/Off Switch
 
