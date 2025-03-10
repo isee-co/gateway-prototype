@@ -25,13 +25,13 @@ The gateway should subscribe to the ***Request topic***, invoke the requested me
 
 | #        | topic                                          | type      | Qos | Retain | User Properties*                                                                                                    |
 |----------|------------------------------------------------|-----------|:---:|:------:|---------------------------------------------------------------------------------------------------------------------|
-| Request  | / ${Home_ID} / RPC_REQ / ${Gateway_ID}         | Subscribe |  2  | false  | <code class="language-json">{<br>"Response topic": "***Requester_ID***",<br>// sequential request id  <br> "Correlation data": 123 <br>} |
-| Response | / ${Home_ID} / RPC_RES / ${***Requester_ID***} | Publish   |  1  | false  | <code class="language-json">{<br>    // same as request id <br>    "Correlation data": 123 <br>}</code>             |
+| Request  | / ${Home_ID} / RPC_REQ / ${Gateway_ID}         | Subscribe |  2  | false  | <code class="language-javascript">{<br>"Response topic": "***Requester_ID***",<br>// sequential request id  <br> "Correlation data": 123 <br>} |
+| Response | / ${Home_ID} / RPC_RES / ${***Requester_ID***} | Publish   |  1  | false  | <code class="language-javascript">{<br>    // same as request id <br>    "Correlation data": 123 <br>}</code>             |
 
 > ***User Properties** are the user-defined properties that allow users to add their metadata to MQTT v5 messages and transmit additional user-defined information to expand more application scenarios.for more details, please refer to [User Properties](https://www.emqx.com/en/blog/mqtt5-user-properties). and [Request/Response](https://www.emqx.com/en/blog/mqtt5-request-response) pattern.
 
 ***Request body:***
-```json
+```javascript
 {
     // name of method should be call
     "method": "method name",
@@ -41,7 +41,7 @@ The gateway should subscribe to the ***Request topic***, invoke the requested me
 ```
 
 ***Response body:***
-```json
+```javascript
 {
   // method call is success or not. 
   "success": true,
@@ -54,7 +54,7 @@ The gateway should subscribe to the ***Request topic***, invoke the requested me
 
 ***Example:***
 
-```json
+```javascript
 request: { "method": "setJoinPermit", "params": { "state": "enable", "timeout": 10 } }
         
 response: { "success": true, "data": { "state": "enabled", "timeout": 10 } }
@@ -70,7 +70,7 @@ This method is used to enable or disable permit join. when the permit join is en
 
 ***Parameters:***
 
-```json
+```javascript
 {
   // this parameter is required, and should be "enable" or "disable"
   "state": "enable" | "disable",
@@ -84,7 +84,7 @@ This method is used to enable or disable permit join. when the permit join is en
 ``` 
 ***Response data:***
 
-```json
+```javascript
 { "state": "enabled" | "disabled", "timeout": 10 }
 ```
 
@@ -96,7 +96,7 @@ This method is used to set device state. the gateway must process the received s
 
 ***Parameters:***
 
-```json
+```javascript
 {
   "device_id": uint64,
   "endpoint_id": uint8,
@@ -109,7 +109,7 @@ This method is used to set device state. the gateway must process the received s
 
 ***Response data:***
 
-```json
+```javascript
 {} // empty object
 ```
 
@@ -121,7 +121,7 @@ This method is used to get device state. the gateway must read attributes from t
 
 ***Parameters:***
 
-```json
+```javascript
 {
   "device_id": uint64,
   "endpoint_id": uint8,
@@ -132,7 +132,7 @@ This method is used to get device state. the gateway must read attributes from t
 
 ***Response data:***
 
-```json
+```javascript
 {
   // device state object
   "state": DeviceState
@@ -147,13 +147,13 @@ This method is used to set log level.
 
 ***Parameters:***
 
-```json
+```javascript
 { "level": "debug" | "info" | "warn" | "error" }
 ```
 
 ***Response data:***
 
-```json
+```javascript
 { "level": "debug" | "info" | "warn" | "error" }
 ```
 
@@ -171,19 +171,19 @@ This method is used to set log level.
 
 ### 1.1.4.1 On/Off Switch
 
-```json
+```javascript
 { "onOff": bool }
 ```
 
 ### 1.1.4.2 Dimmable Light
 
-```json
+```javascript
 { "brightness": 0 - 100 }
 ```
 
 ### 1.1.4.3 window Covering
 
-```json
+```javascript
 { 
   // Percentage of cover opening
   "percent": 0 - 100 
@@ -192,7 +192,7 @@ This method is used to set log level.
 
 ### 1.1.4.4 AC Controller
 
-```json
+```javascript
 {
   "power": bool,
   // Temperature in Celsius
@@ -216,7 +216,7 @@ The gateway must collect received state from the device.then map to ***DeviceSta
 | / ${Home_ID} / DEV_STATE / ${Device_ID} | Publish | 1   | true   |                 |
 
 ***Message body:***
-```json
+```javascript
 {
   "timestamp": uint64,
   // device state type, see on Device state section
@@ -236,7 +236,7 @@ When permit join is enabled, the gateway processes the received join request fro
 
 ***Success message:***
 
-```json
+```javascript
 {
   // zigbee ieee 64 bit address
   "device_id": uint64,
@@ -260,7 +260,7 @@ When permit join is enabled, the gateway processes the received join request fro
 
 ***Failure message:***
 
-```json
+```javascript
 {
   // zigbee ieee 64 bit address
   "device_id": uint64,
