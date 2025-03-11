@@ -25,8 +25,8 @@ The gateway should subscribe to the ***Request topic***, invoke the requested me
 
 | #        | topic                                          | type      | Qos | Retain | User Properties*                                                                                                    |
 |----------|------------------------------------------------|-----------|:---:|:------:|---------------------------------------------------------------------------------------------------------------------|
-| Request  | / ${Home_ID} / RPC_REQ / ${Gateway_ID}         | Subscribe |  2  | false  | <code class="language-javascript">{<br>"Response topic": "***Requester_ID***",<br>// sequential request id  <br> "Correlation data": 123 <br>} |
-| Response | / ${Home_ID} / RPC_RES / ${***Requester_ID***} | Publish   |  1  | false  | <code class="language-javascript">{<br>    // same as request id <br>    "Correlation data": 123 <br>}</code>             |
+| Request  | / ${Home_ID} / RPC_REQ / ${Gateway_ID}         | Subscribe |  2  | false  | { "Response topic": "***Requester_ID***", <br> "Correlation data": 123 // sequential request id } |
+| Response | / ${Home_ID} / RPC_RES / ${***Requester_ID***} | Publish   |  1  | false  | { "Correlation data": 123 // same as request id }             |
 
 > ***User Properties** are the user-defined properties that allow users to add their metadata to MQTT v5 messages and transmit additional user-defined information to expand more application scenarios.for more details, please refer to [User Properties](https://www.emqx.com/en/blog/mqtt5-user-properties). and [Request/Response](https://www.emqx.com/en/blog/mqtt5-request-response) pattern.
 
